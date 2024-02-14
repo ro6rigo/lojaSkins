@@ -1,8 +1,7 @@
 import "./App.css";
 import React from "react";
-import { useEffect } from 'react';
-import ReactGA from 'react-ga';
-
+import { useEffect, useState } from 'react';
+import GA4 from "react-ga4";
 import Card from "./components/layout/Card";
 import Armas from "./components/Arma/Armas";
 import Armas1 from "./components/Arma/Armas1";
@@ -12,22 +11,45 @@ import Armas4 from "./components/Arma/Armas4";
 import Armas5 from "./components/Arma/Armas5";
 import Armas6 from "./components/Arma/Armas6";
 import Armas7 from "./components/Arma/Armas7";
-
+import { usePageTracking } from "./tracking";
 export default function App(){
-    
-    ReactGA.initialize('G-1Y72TLXX95'); 
+    const pageTitle = "Vitrine";
+    usePageTracking(pageTitle);
 
-    useEffect(() => {
-        ReactGA.initialize('G-1Y72TLXX95'); // substitua 'UA-000000-01' pelo seu ID de acompanhamento
-        ReactGA.pageview(window.location.pathname + window.location.search);
-    }, []);
+    function clicar(){
+        const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID;
+ 
+        GA4.reset();
+        const options = {
+            gaOptions: {
+                cookie_update: false,
+                send_page_view: false,
+                page_title: pageTitle,
+            },
+        };
 
+        const config = [
+            { trackingId: GA_MEASUREMENT_ID },
+        ];
+        GA4.initialize(config, options);
+        GA4.event(
+            {
+                action: 'Evento de clique',
+                category: 'Painel de Armas',
+                label: 'Usuario clicou no botão!',
+            }
+        );
+        alert('Clicou!')
+        console.log('Clicou!')
+    }
 
     return (
     
     <div className="App">
-        <h1>CS:GO</h1>
-        <button onClick={() => ReactGA.event({ category: 'Button', action: 'Click', label: 'Butina Store' })}>Butina Store</button>
+        <h1>CS:GO</h1>       
+        <button onClick={clicar()}>Butina Store!</button>
+        {/* <button onClick={() => ReactGA.event({ category: 'Button', action: 'Click', label: 'Butina Store' })}>
+            Butina Store</button> */}            
         <div className="Cards">
             <Card titulo="#AK-47" color="#73503C">
                 <Armas />
